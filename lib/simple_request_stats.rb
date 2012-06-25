@@ -1,5 +1,5 @@
 module SimpleRequestStats
-  mattr_accessor :groups
+  mattr_reader :groups
   @@groups = {}
 
   def self.setup
