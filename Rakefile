@@ -13,41 +13,28 @@ require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "simple_request_stats"
-  gem.homepage = "http://github.com/christof@chdorner.com/simple_request_stats"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "christof@chdorner.me"
-  gem.authors = ["Christof Dorner"]
-  # dependencies defined in Gemfile
+  gem.name = 'simple_request_stats'
+  gem.homepage = 'https://github.com/chdorner/simple_request_stats'
+  gem.license = 'MIT'
+  gem.summary = %Q{Simple request stats collector for Rails applications}
+  gem.email = 'christof@chdorner.me'
+  gem.authors = ['Christof Dorner']
+  gem.files = Dir.glob('lib/**/*.rb')
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+require 'rspec/core'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
+task :default => :spec
 
-task :default => :test
+require 'yard'
+YARD::Rake::YardocTask.new
 
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "simple_request_stats #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+Rake::Task['console'].clear
+task :console do
+  sh "irb -I lib -r 'simple_requests_stats'"
 end

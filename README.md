@@ -1,6 +1,6 @@
 # simple_request_stats
 
-Description goes here.
+Simple request stats collector for Rails applications.
 
 ## Contributing to simple_request_stats
  
