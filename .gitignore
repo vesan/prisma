@@ -12,6 +12,9 @@ doc
 # bundler
 .bundle
 
+# rails
+log
+
 # jeweler generated
 pkg
 

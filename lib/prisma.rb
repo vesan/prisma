@@ -1,6 +1,9 @@
 require 'bundler/setup'
 Bundler.require(:default)
 
+require 'prisma/railtie'
+require 'prisma/filter'
+
 module Prisma
   mattr_reader :groups
   @@groups = {}
