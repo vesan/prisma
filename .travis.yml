@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------
+# Configuration file for http://travis-ci.org/#!/chdorner/epubinfo
+# ----------------------------------------------------------------
+
+language: ruby
+script: "bundle exec rake spec"
+rvm:
+  - 1.9.2
+  - 1.9.3
+  - ruby-head
+  - jruby-18mode
+  - jruby-19mode
+
+before_install:
+  - gem install bundler
+
