@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '>= 3.0.0'
+gem 'redis-namespace', '>= 1.0.2'
 
 group :development do
   gem 'rspec', '~> 2.10.0'

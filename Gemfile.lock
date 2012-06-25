@@ -91,6 +91,9 @@ GEM
       ffi (>= 0.5.0)
     rdoc (3.12)
       json (~> 1.4)
+    redis (2.2.2)
+    redis-namespace (1.0.3)
+      redis (< 3.0.0)
     rspec (2.10.0)
       rspec-core (~> 2.10.0)
       rspec-expectations (~> 2.10.0)
@@ -127,6 +130,7 @@ DEPENDENCIES
   kramdown
   rails (>= 3.0.0)
   rb-fsevent
+  redis-namespace (>= 1.0.2)
   rspec (~> 2.10.0)
   simplecov
   yard (~> 0.7)

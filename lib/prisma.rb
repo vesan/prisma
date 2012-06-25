@@ -1,6 +1,15 @@
+require 'bundler/setup'
+Bundler.require(:default)
+
 module Prisma
   mattr_reader :groups
   @@groups = {}
+
+  mattr_accessor :redis
+  @@redis = Redis.new
+
+  mattr_accessor :redis_namespace
+  @@redis_namespace = 'prisma'
 
   def self.setup
     yield self
@@ -8,6 +17,10 @@ module Prisma
 
   def self.group(name, &block)
     groups[:name] = block
+  end
+
+  def self.redis
+    @@namespaced_redis ||= Redis::Namespace.new(redis_namespace, :redis => @@redis)
   end
 end
 
