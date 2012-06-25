@@ -8,8 +8,6 @@ rvm:
   - 1.9.2
   - 1.9.3
   - ruby-head
-  - jruby-18mode
-  - jruby-19mode
 
 gemfile:
   - Gemfile
@@ -19,8 +17,6 @@ gemfile:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby-18mode
-    - rvm: jruby-19mode
 
 before_install:
   - gem install bundler
