@@ -49,6 +49,7 @@ GEM
       rdoc
     journey (1.0.4)
     json (1.7.3)
+    kramdown (0.13.7)
     listen (0.4.6)
       rb-fchange (~> 0.0.5)
       rb-fsevent (~> 0.9.1)
@@ -88,7 +89,6 @@ GEM
     rb-fsevent (0.9.1)
     rb-inotify (0.8.8)
       ffi (>= 0.5.0)
-    rdiscount (1.6.8)
     rdoc (3.12)
       json (~> 1.4)
     rspec (2.10.0)
@@ -124,9 +124,9 @@ DEPENDENCIES
   guard
   guard-rspec
   jeweler (~> 1.8.3)
+  kramdown
   rails (>= 3.0.0)
   rb-fsevent
-  rdiscount
   rspec (~> 2.10.0)
   simplecov
   yard (~> 0.7)
