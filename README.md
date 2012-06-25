@@ -1,4 +1,4 @@
-# prisma
+# prisma [![Continuous Integration](https://secure.travis-ci.org/chdorner/prisma.png?branch=master)](https://secure.travis-ci.org/chdorner/prisma)
 
 Simple request stats collector for Rails applications.
 
