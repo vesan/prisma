@@ -13,8 +13,8 @@ require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
-  gem.name = 'simple_request_stats'
-  gem.homepage = 'https://github.com/chdorner/simple_request_stats'
+  gem.name = 'prisma'
+  gem.homepage = 'https://github.com/chdorner/prisma'
   gem.license = 'MIT'
   gem.summary = %Q{Simple request stats collector for Rails applications}
   gem.email = 'christof@chdorner.me'
@@ -36,5 +36,5 @@ YARD::Rake::YardocTask.new
 
 Rake::Task['console'].clear
 task :console do
-  sh "irb -I lib -r 'simple_requests_stats'"
+  sh "irb -I lib -r 'prisma'"
 end

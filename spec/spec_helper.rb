@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
 require 'action_controller'
-require 'simple_request_stats'
+require 'prism'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.

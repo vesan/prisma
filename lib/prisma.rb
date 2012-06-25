@@ -1,4 +1,4 @@
-module SimpleRequestStats
+module Prisma
   mattr_reader :groups
   @@groups = {}
 
