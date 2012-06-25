@@ -16,6 +16,12 @@ gemfile:
   - gemfiles/rails3_0.gemfile
   - gemfiles/rails3_1.gemfile
 
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-18mode
+    - rvm: jruby-19mode
+
 before_install:
   - gem install bundler
 
