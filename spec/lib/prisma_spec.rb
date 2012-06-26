@@ -1,20 +1,6 @@
 require 'spec_helper'
 
 describe Prisma do
-  # storing default values before and re-applying after
-  SAVE_AND_RESTORE_CLASS_VARIABLES = [:groups, :redis, :redis_namespace]
-  before do
-    Prisma.class_variable_set(:@@namespaced_redis, nil)
-    SAVE_AND_RESTORE_CLASS_VARIABLES.each do |variable|
-      instance_variable_set("@__#{variable}", Prisma.class_variable_get("@@#{variable}"))
-    end
-  end
-  after do
-    SAVE_AND_RESTORE_CLASS_VARIABLES.each do |variable|
-      Prisma.class_variable_set("@@#{variable}", instance_variable_get("@__#{variable}"))
-    end
-  end
-
   describe 'attributes' do
     context 'default value for' do
       subject { Prisma }

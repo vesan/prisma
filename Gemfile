@@ -14,4 +14,5 @@ group :development do
   gem 'rb-fsevent'
   gem 'growl'
   gem 'simplecov'
+  gem 'timecop'
 end

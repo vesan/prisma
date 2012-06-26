@@ -11,6 +11,9 @@ module Prisma
     def prisma_disperse_request
       Prisma.groups.each do |name, block|
         value = block.call(request)
+        next unless value.present?
+
+        Prisma.redis.hincrby Prisma.redis_key(name), value, 1
       end
     end
   end

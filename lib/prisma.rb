@@ -19,11 +19,15 @@ module Prisma
   end
 
   def self.group(name, &block)
-    groups[:name] = block
+    @@groups[name] = block
   end
 
   def self.redis
     @@namespaced_redis ||= Redis::Namespace.new(redis_namespace, :redis => @@redis)
+  end
+
+  def self.redis_key(group_name)
+    "#{group_name}:#{Time.now.utc.strftime('%Y:%m:%d')}"
   end
 end
 
