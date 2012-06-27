@@ -40,7 +40,7 @@ describe TestController, :type => :controller do
     get :index
   end
 
-  context 'redis', :focus do
+  context 'redis' do
     before(:all) do
       Timecop.freeze(Time.now)
     end
@@ -71,6 +71,26 @@ describe TestController, :type => :controller do
         get :index
         Prisma.redis.hget(Prisma.redis_key(:by_user_id), '1').should == '1'
       end
+
+      it 'skips incrementing when given block returns false' do
+        Prisma.setup do |config|
+          config.group(:by_user_id) { false }
+        end
+
+        expect do
+          get :index
+        end.to_not change { Prisma.redis.keys.count }
+      end
+
+      it 'skips incrementing when given block returns nil' do
+        Prisma.setup do |config|
+          config.group(:by_user_id) { nil }
+        end
+
+        expect do
+          get :index
+        end.to_not change { Prisma.redis.keys.count }
+      end
     end
 
     context 'on subsequent requests' do
@@ -85,6 +105,25 @@ describe TestController, :type => :controller do
         get :index
         Prisma.redis.hget(Prisma.redis_key(:by_user_id), '1').should == '4'
       end
+    end
+
+    it 'uses one key for each day and group' do
+      Prisma.setup do |config|
+        config.group(:by_user_id) { 1 }
+        config.group(:by_client_id) { 1 }
+      end
+
+      puts Prisma.redis.keys
+
+      expect do
+        get :index
+      end.to change { Prisma.redis.keys.count }.by(2)
+
+      Timecop.freeze(Date.yesterday)
+
+      expect do
+        get :index
+      end.to change { Prisma.redis.keys.count }.by(2)
     end
   end
 end
