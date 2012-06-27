@@ -1,6 +1,11 @@
 require 'bundler/setup'
 Bundler.require(:default, :development, :test)
 
+require 'simplecov'
+SimpleCov.start do
+  add_filter 'spec'
+end
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rails/all'
@@ -38,10 +43,4 @@ RSpec.configure do |config|
     Prisma.class_variable_set(:@@namespaced_redis, nil)
   end
 end
-
-require 'simplecov'
-SimpleCov.start do
-  add_filter 'spec'
-end
-
 
