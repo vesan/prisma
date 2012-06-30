@@ -38,3 +38,26 @@ Rake::Task['console'].clear
 task :console do
   sh "irb -I lib -r 'prisma'"
 end
+
+task :seed do
+  require 'prisma'
+  Prisma.redis.keys.each { |key| Prisma.redis.del key }
+
+  GROUP_NAMES = [:group_1, :group_2, :group_3, :group_4, :group_5]
+
+  Prisma.setup do |config|
+    GROUP_NAMES.each do |group_name|
+      config.group(group_name) { 1 }
+    end
+  end
+
+  GROUP_NAMES.each do |group_name|
+    365.times do |n|
+      count = rand(100)
+      count.times do |user_id|
+        Prisma.redis.hincrby "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}", user_id, 1
+      end
+    end
+  end
+end
+
