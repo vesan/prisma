@@ -1,6 +1,7 @@
 require 'bundler/setup'
 Bundler.require(:default)
 
+require 'prisma/group'
 require 'prisma/railtie'
 require 'prisma/filter'
 
@@ -22,15 +23,16 @@ module Prisma
   end
 
   def self.group(name, &block)
-    @@groups[name] = block
+    @@groups[name] = Group.new(:name => name, :block => block)
   end
 
   def self.redis
     @@namespaced_redis ||= Redis::Namespace.new(redis_namespace, :redis => @@redis)
   end
 
-  def self.redis_key(group_name)
-    "#{group_name}:#{Time.now.utc.strftime('%Y:%m:%d')}"
+  def self.redis_key(group_name, date=nil)
+    date = Time.now.utc.to_date unless date
+    "#{group_name}:#{date.strftime('%Y:%m:%d')}"
   end
 
   def self.redis_expire(duration=nil)

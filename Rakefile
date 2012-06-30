@@ -52,6 +52,7 @@ task :seed do
   end
 
   GROUP_NAMES.each do |group_name|
+    puts "Seeding #{group_name}..."
     365.times do |n|
       count = rand(100)
       count.times do |user_id|
