@@ -57,6 +57,13 @@ describe Prisma do
         end
       end.to change(Prisma.groups, :count).by(1)
     end
+
+    it 'should store groups as Group objects' do
+      Prisma.setup do |config |
+        config.group (:by_user_id) { 1 }
+      end
+      Prisma.groups[:by_user_id].should be_kind_of Prisma::Group
+    end
   end
 
   describe '#redis' do
@@ -76,6 +83,12 @@ describe Prisma do
     it 'returns a string with the group name and todays date' do
       Timecop.freeze(Time.parse('2012-06-27T00:00:00Z')) do
         Prisma.redis_key(:my_group).should == 'my_group:2012:06:27'
+      end
+    end
+
+    it 'allows to overwrite date' do
+      Timecop.freeze(Time.parse('2012-06-27T00:00:00Z')) do
+        Prisma.redis_key(:my_group, Date.new(2012, 06, 01)).should == 'my_group:2012:06:01'
       end
     end
   end

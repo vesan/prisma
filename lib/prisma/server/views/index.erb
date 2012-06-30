@@ -1,8 +1,18 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
     <title>Prisma</title>
-    <link href="./reset.css" media="screen" rel="stylesheet" type="text/css">
-    <link href="./style.css" media="screen" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="<%= url('/bootstrap.min.css') %>" rel="stylesheet">
+    <link href="<%= url('/bootstrap-responsive.min.css') %>" rel="stylesheet">
+    <link href="<%= url('/style.css') %>" rel="stylesheet">
+    <%# <link href="./reset.css" media="screen" rel="stylesheet" type="text/css">%>
+    <%# <link href="./style.css" media="screen" rel="stylesheet" type="text/css">%>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages:['corechart']});
+    </script>
   </head>
   <body>
     <div id="rainbow">
@@ -15,22 +25,55 @@
       <div class="rainbow-color violet"></div>
     </div>
 
-    <div class="container container_2">
-      <div class="grid_1">
-        Group 1
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="<%= url('/') %>">Prisma</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li<%= " class=\"active\"" if request.path_info == '/daily' %>><a href="<%= url('/daily') %>">Daily</a></li>
+              <li<%= " class=\"active\"" if request.path_info == '/weekly' %>><a href="<%= url('/weekly') %>">Weekly</a></li>
+              <li<%= " class=\"active\"" if request.path_info == '/monthly' %>><a href="<%= url('/monthly') %>">Monthly</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="grid_1">
-        Group 2
-      </div>
-      <div class="clear">&nbsp;</div>
-      <div class="grid_1">
-        Group 3
-      </div>
-      <div class="grid_1">
-        Group 4
-      </div>
-      <div class="clear">&nbsp;</div>
     </div>
+
+    <div class="container">
+      <% @groups.each_with_index do |item, index| %>
+        <% group = item[0] %>
+
+        <% if index.even? %>
+        <div class="row-fluid">
+        <% end %>
+
+        <div class="span6">
+          <h3><%= group.name.humanize %></h3>
+          <div id="<%= group.name %>_chart"></div>
+        </div>
+
+        <% if index.odd? %>
+        </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <script type="text/javascript">
+      function drawCharts() {
+        <% @groups.each do |group, values| %>
+        var data_<%= group.name %> = google.visualization.arrayToDataTable([
+          ['Day', 'Hits'],
+          <% values.each do |date, value| %>
+            ['<%= date.strftime('%m-%d') %>', <%= value %>],
+          <% end %>
+        ]);
+        var chart_<%= group.name %> = new google.visualization.LineChart(document.getElementById('<%= group.name %>_chart'));
+        chart_<%= group.name %>.draw(data_<%= group.name %>);
+        <% end %>
+      }
+      google.setOnLoadCallback(drawCharts);
+    </script>
   </body>
 </html>
 

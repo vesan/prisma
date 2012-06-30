@@ -10,6 +10,33 @@ module Prisma
     set :public_folder, File.join(dir, 'public')
 
     get '/' do
+      redirect to('/daily')
+    end
+
+    get '/daily' do
+      @groups = Prisma.redis.lrange('configuration', 0, -1).map do |group_name|
+        group = Prisma::Group.new(:name => group_name)
+        values = group.range((Date.today-30)...Date.today)
+        [group, values]
+      end
+      erb :index
+    end
+
+    get '/weekly' do
+      @groups = Prisma.redis.lrange('configuration', 0, -1).map do |group_name|
+        group = Prisma::Group.new(:name => group_name)
+        values = group.range((Date.today-30)...Date.today)
+        [group, values]
+      end
+      erb :index
+    end
+
+    get '/monthly' do
+      @groups = Prisma.redis.lrange('configuration', 0, -1).map do |group_name|
+        group = Prisma::Group.new(:name => group_name)
+        values = group.range((Date.today-30)...Date.today)
+        [group, values]
+      end
       erb :index
     end
   end
