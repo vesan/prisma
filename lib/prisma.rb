@@ -14,6 +14,8 @@ module Prisma
   mattr_accessor :redis_namespace
   @@redis_namespace = 'prisma'
 
+  mattr_accessor :redis_expiration_duration
+
   def self.setup
     yield self
   end
@@ -28,6 +30,11 @@ module Prisma
 
   def self.redis_key(group_name)
     "#{group_name}:#{Time.now.utc.strftime('%Y:%m:%d')}"
+  end
+
+  def self.redis_expire(duration=nil)
+    duration = redis_expiration_duration unless duration
+    (Time.now.utc.beginning_of_day + duration).to_i - Time.now.utc.to_i
   end
 end
 

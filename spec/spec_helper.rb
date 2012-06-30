@@ -22,11 +22,14 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true  
 
   # storing default values before and re-applying after
-  SAVE_AND_RESTORE_CLASS_VARIABLES = [:groups, :redis, :redis_namespace]
+  SAVE_AND_RESTORE_CLASS_VARIABLES = [:groups, :redis, :redis_namespace, :redis_expiration_duration]
   config.before(:suite) do
     default_values = {}
     SAVE_AND_RESTORE_CLASS_VARIABLES.each do |variable|
-      default_values[variable] = Prisma.class_variable_get("@@#{variable}").dup
+      value = Prisma.class_variable_get("@@#{variable}")
+      value = value.dup rescue value
+
+      default_values[variable] = value
     end
 
     DEFAULT_VALUES = default_values
@@ -38,7 +41,8 @@ RSpec.configure do |config|
     REDIS.flushdb
 
     DEFAULT_VALUES.each do |variable, value|
-      Prisma.class_variable_set("@@#{variable}", value.dup)
+      new_value = value.dup rescue value
+      Prisma.class_variable_set("@@#{variable}", new_value)
     end
     Prisma.class_variable_set(:@@namespaced_redis, nil)
   end
