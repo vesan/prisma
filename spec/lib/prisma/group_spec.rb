@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe Prisma::Group do
+  let(:group_name) { :test_group }
+
+  def set_hits(date, count)
+    count.times do |n|
+      Prisma.redis.hset Prisma.redis_key(group_name, date), n, 1
+    end
+  end
+
   describe '#initialize' do
     context 'sets attributes from hash' do
       let(:name_stub) { stub }
@@ -14,11 +22,14 @@ describe Prisma::Group do
 
   describe '#range' do
     let(:range) { Date.new(2012, 06, 01)..Date.new(2012, 06, 03) }
-    let(:group_name) { :test_group }
     let(:group) { Prisma::Group.new(:name => group_name) }
 
     it 'returns a hash' do
       group.range(range).should be_kind_of Hash
+    end
+
+    it 'is also accessible via #daily' do
+      group.daily(range).should be_kind_of Hash
     end
 
     context 'when no data is available' do
@@ -33,15 +44,9 @@ describe Prisma::Group do
 
     context 'when data is available' do
       before do
-        Prisma.redis.hmset Prisma.redis_key(group_name, Date.new(2012, 06, 1)),
-          1, 1,
-          2, 1,
-          3, 1
-        Prisma.redis.hmset Prisma.redis_key(group_name, Date.new(2012, 06, 2)),
-          1, 1
-        Prisma.redis.hmset Prisma.redis_key(group_name, Date.new(2012, 06, 3)),
-          1, 1,
-          2, 1
+        set_hits(Date.new(2012, 06, 1), 3)
+        set_hits(Date.new(2012, 06, 2), 1)
+        set_hits(Date.new(2012, 06, 3), 2)
       end
 
       it 'returns the counts' do
@@ -51,6 +56,51 @@ describe Prisma::Group do
           Date.new(2012, 06, 03) => 2
         }
       end
+    end
+  end
+
+  describe '#weekly' do
+    let(:range) { Date.new(2012, 06, 18)..Date.new(2012, 07, 01) }
+    let(:group) { Prisma::Group.new(:name => group_name) }
+
+    before do
+      Timecop.freeze(Time.now)
+      set_hits(Date.new(2012, 06, 17), 1)
+      set_hits(Date.new(2012, 06, 18), 2)
+      set_hits(Date.new(2012, 06, 25), 1)
+      set_hits(Date.new(2012, 06, 26), 1)
+      set_hits(Date.new(2012, 07, 01), 1)
+    end
+    after { Timecop.return }
+
+    it 'groups counts by week' do
+      group.weekly(range).should == {
+        Date.new(2012, 06, 18) => 2,
+        Date.new(2012, 06, 25) => 3
+      }
+    end
+  end
+
+  describe '#monthly' do
+    let(:range) { Date.new(2012, 05, 01)..Date.new(2012, 06, 01) }
+    let(:group) { Prisma::Group.new(:name => group_name) }
+
+    before do
+      Timecop.freeze(Time.now)
+      set_hits(Date.new(2012, 04, 17), 1)
+      set_hits(Date.new(2012, 05, 18), 2)
+      set_hits(Date.new(2012, 05, 25), 1)
+      set_hits(Date.new(2012, 05, 26), 1)
+      set_hits(Date.new(2012, 06, 01), 1)
+      set_hits(Date.new(2012, 07, 01), 1)
+    end
+    after { Timecop.return }
+
+    it 'groups counts by month' do
+      group.monthly(range).should == {
+        Date.new(2012, 05, 01) => 4,
+        Date.new(2012, 06, 01) => 1
+      }
     end
   end
 end

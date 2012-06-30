@@ -15,6 +15,29 @@ module Prisma
       end
       data
     end
+    alias_method :daily, :range
+
+    def weekly(range)
+      data = range(range)
+
+      data = data.group_by { |date, value| date.beginning_of_week }
+      sum_up_grouped_data(data)
+    end
+
+    def monthly(range)
+      data = range(range)
+
+      data = data.group_by { |date, value| date.beginning_of_month }
+      sum_up_grouped_data(data)
+    end
+
+    private
+
+    def sum_up_grouped_data(data)
+      data.each do |date, values|
+        data[date] = values.map { |value| value.second }.inject{ |sum, count| sum + count }
+      end
+    end
   end
 end
 
