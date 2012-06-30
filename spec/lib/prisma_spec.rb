@@ -20,7 +20,7 @@ describe Prisma do
     end
 
     context 'allows to overwrite attribute' do
-      let(:redis_stub) { stub }
+      let(:redis_stub) { stub(:del => true, :rpush => true) }
       let(:redis_namespace_stub) { stub }
       let(:redis_expiration_duration_stub) { stub }
 
@@ -36,6 +36,16 @@ describe Prisma do
       it('redis') { subject.class_variable_get(:@@redis).should == redis_stub }
       it('redis_namespace') { subject.class_variable_get(:@@redis_namespace).should == redis_namespace_stub }
       it('redis_expiration_duration') { subject.class_variable_get(:@@redis_expiration_duration).should == redis_expiration_duration_stub }
+    end
+
+    it 'stores configuration in redis' do
+      Prisma.setup do |config|
+        config.group('group1') { 1 }
+        config.group('group2') { 1 }
+        config.group('group3') { 1 }
+      end
+
+      Prisma.redis.lrange('configuration', 0, -1).should == ['group1', 'group2', 'group3']
     end
   end
 

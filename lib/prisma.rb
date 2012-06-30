@@ -18,6 +18,7 @@ module Prisma
 
   def self.setup
     yield self
+    store_configuration
   end
 
   def self.group(name, &block)
@@ -35,6 +36,13 @@ module Prisma
   def self.redis_expire(duration=nil)
     duration = redis_expiration_duration unless duration
     (Time.now.utc.beginning_of_day + duration).to_i - Time.now.utc.to_i
+  end
+
+  def self.store_configuration
+    redis.del 'configuration'
+    groups.keys.each do |key|
+      redis.rpush 'configuration', key
+    end
   end
 end
 
