@@ -7,8 +7,6 @@
     <link href="<%= url('/bootstrap.min.css') %>" rel="stylesheet">
     <link href="<%= url('/bootstrap-responsive.min.css') %>" rel="stylesheet">
     <link href="<%= url('/style.css') %>" rel="stylesheet">
-    <%# <link href="./reset.css" media="screen" rel="stylesheet" type="text/css">%>
-    <%# <link href="./style.css" media="screen" rel="stylesheet" type="text/css">%>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages:['corechart']});
@@ -61,15 +59,22 @@
 
     <script type="text/javascript">
       function drawCharts() {
+        var options = {
+          backgroundColor: { fill: '#f5faff' },
+          fontName: 'Helvetica',
+          legend: { position: 'none' },
+          pointSize: 4,
+          series: [{ color: '#ff8000' }]
+        }
+
         <% @groups.each do |group, values| %>
         var data_<%= group.name %> = google.visualization.arrayToDataTable([
-          ['Day', 'Hits'],
           <% values.each do |date, value| %>
-            ['<%= date.strftime('%m-%d') %>', <%= value %>],
+            ['<%= date.strftime(@date_format) %>', <%= value %>],
           <% end %>
         ]);
         var chart_<%= group.name %> = new google.visualization.LineChart(document.getElementById('<%= group.name %>_chart'));
-        chart_<%= group.name %>.draw(data_<%= group.name %>);
+        chart_<%= group.name %>.draw(data_<%= group.name %>, options);
         <% end %>
       }
       google.setOnLoadCallback(drawCharts);

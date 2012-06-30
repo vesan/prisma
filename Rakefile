@@ -54,7 +54,7 @@ task :seed do
   GROUP_NAMES.each do |group_name|
     puts "Seeding #{group_name}..."
     365.times do |n|
-      count = rand(100)
+      count = rand(1000)
       count.times do |user_id|
         Prisma.redis.hincrby "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}", user_id, 1
       end
