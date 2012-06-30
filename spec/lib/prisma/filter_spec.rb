@@ -16,12 +16,6 @@ class TestController < ActionController::Base
 end
 
 describe TestController, :type => :controller do
-  before(:each) do
-    Prisma.setup do |config|
-      config.redis = REDIS
-    end
-  end
-
   it 'calls prisma_disperse_request when requesting an action' do
     controller.should_receive(:prisma_disperse_request)
     get :index
