@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  font-family: Helvetica, sans-serif;
+}
+
+#rainbow {
+  margin-bottom: 20px;
+}
+
+.rainbow-color {
+  width: 100%;
+  height: 2px;
+  opacity: 0.6;
+}
+
+.red    { background-color: #ff0000; }
+.orange { background-color: #ff8000; }
+.yellow { background-color: #ffff00; }
+.green  { background-color: #008000; }
+.blue   { background-color: #0000ff; }
+.indigo { background-color: #4b0082; }
+.violet { background-color: #9400d3; }
+
+.container_2 {
+	width: 92%;
+	margin-left: 4%;
+	margin-right: 4%;
+}
+
+.grid_1,
+.grid_2 {
+	display:inline;
+	float: left;
+	position: relative;
+	margin-left: 1%;
+	margin-right: 1%;
+}
+
+.alpha {
+	margin-left: 0;
+}
+
+.omega {
+	margin-right: 0;
+}
+
+.container_2 .grid_1 {
+	width:48.0%;
+}
+
+.container_2 .grid_2 {
+	width:98.0%;
+}
+
+.container_2 .prefix_1 {
+	padding-left:50.0%;
+}
+
+.container_2 .suffix_1 {
+	padding-right:50.0%;
+}
+
+.container_2 .push_1 {
+	left:50.0%;
+}
+
+.container_2 .pull_1 {
+	left:-50.0%;
+}
+
+.clear {
+	clear: both;
+	display: block;
+	overflow: hidden;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+}
+

@@ -4,3 +4,9 @@ guard 'rspec', :version => 2 do
   watch('spec/spec_helper.rb')  { "spec" }
 end
 
+guard 'livereload' do
+  watch('lib/prisma/server.rb')
+  watch(%r{lib/prisma/server/views/.+\.(erb)})
+  watch(%r{lib/prisma/server/public/.+\.(css|js|html)})
+end
+

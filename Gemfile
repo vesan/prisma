@@ -12,8 +12,10 @@ group :development do
   gem 'jeweler', '~> 1.8.3'
   gem 'guard'
   gem 'guard-rspec'
+  gem 'guard-livereload'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'simplecov'
   gem 'timecop'
+  gem 'shotgun'
 end
