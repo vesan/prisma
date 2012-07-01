@@ -1,5 +1,5 @@
-require 'bundler/setup'
-Bundler.require(:default)
+require 'rails/all'
+require 'redis-namespace'
 
 require 'prisma/group'
 require 'prisma/railtie'
@@ -10,7 +10,7 @@ module Prisma
   @@groups = {}
 
   mattr_accessor :redis
-  @@redis = Redis.new
+  @@redis = ::Redis.new
 
   mattr_accessor :redis_namespace
   @@redis_namespace = 'prisma'
