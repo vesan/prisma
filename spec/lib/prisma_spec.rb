@@ -40,12 +40,16 @@ describe Prisma do
 
     it 'stores configuration in redis' do
       Prisma.setup do |config|
-        config.group('group1') { 1 }
-        config.group('group2') { 1 }
+        config.group('group1', 'description 1') { 1 }
+        config.group('group2', 'description 2') { 1 }
         config.group('group3') { 1 }
       end
 
-      Prisma.redis.lrange('configuration', 0, -1).should == ['group1', 'group2', 'group3']
+      Prisma.redis.hgetall('configuration').should == {
+        'group1' => 'description 1',
+        'group2' => 'description 2',
+        'group3' => ''
+      }
     end
   end
 

@@ -22,8 +22,8 @@ module Prisma
     store_configuration
   end
 
-  def self.group(name, &block)
-    @@groups[name] = Group.new(:name => name, :block => block)
+  def self.group(name, description=nil, &block)
+    @@groups[name] = Group.new(:name => name, :description => description, :block => block)
   end
 
   def self.redis
@@ -42,8 +42,8 @@ module Prisma
 
   def self.store_configuration
     redis.del 'configuration'
-    groups.keys.each do |key|
-      redis.rpush 'configuration', key
+    groups.values.each do |group|
+      redis.hset 'configuration', group.name, group.description
     end
   end
 end

@@ -1,9 +1,10 @@
 module Prisma
   class Group
-    attr_accessor :name, :block
+    attr_accessor :name, :description, :block
 
     def initialize(options={})
       self.name = options[:name]
+      self.description = options[:description]
       self.block = options[:block]
     end
 

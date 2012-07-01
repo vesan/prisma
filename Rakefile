@@ -47,7 +47,7 @@ task :seed do
 
   Prisma.setup do |config|
     GROUP_NAMES.each do |group_name|
-      config.group(group_name) { 1 }
+      config.group(group_name, "Description of #{group_name}") { 1 }
     end
   end
 
