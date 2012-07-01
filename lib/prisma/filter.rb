@@ -11,7 +11,7 @@ module Prisma
     def prisma_disperse_request
       Prisma.groups.each do |name, group|
         redis_key = Prisma.redis_key(name)
-        value = group.block.call(request)
+        value = group.block.call(self)
         Prisma.redis.hincrby redis_key, value, 1 if value
 
         Prisma.redis.expire redis_key, Prisma.redis_expire if Prisma.redis_expiration_duration
