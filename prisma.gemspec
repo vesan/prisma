@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "prisma"
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christof Dorner"]
@@ -23,6 +23,10 @@ Gem::Specification.new do |s|
     "lib/prisma/group.rb",
     "lib/prisma/railtie.rb",
     "lib/prisma/server.rb",
+    "lib/prisma/server/public/bootstrap-responsive.min.css",
+    "lib/prisma/server/public/bootstrap.min.css",
+    "lib/prisma/server/public/reset.css",
+    "lib/prisma/server/public/style.css",
     "lib/prisma/server/views/index.erb"
   ]
   s.homepage = "https://github.com/chdorner/prisma"
