@@ -4,6 +4,7 @@ require 'prisma'
 require 'active_support/core_ext'
 
 module Prisma
+  # Sinatra application for viewing request stats
   class Server < Sinatra::Base
     dir = File.join(File.dirname(File.expand_path(__FILE__)), 'server')
 

@@ -1,6 +1,6 @@
 # prisma [![Continuous Integration](https://secure.travis-ci.org/chdorner/prisma.png?branch=master)](https://secure.travis-ci.org/chdorner/prisma)
 
-Simple request stats collector for Rails applications.
+Prisma is a simple request stats collector for Rails applications with configurable groups.
 
 ## Contributing to prisma
  

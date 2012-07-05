@@ -1,4 +1,5 @@
 module Prisma
+  # Gets included into controllers and runs after_filter method
   module Filter
     extend ActiveSupport::Concern
 

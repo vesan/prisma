@@ -1,13 +1,27 @@
 module Prisma
+  # Represents a configured group, has convenience methods for getting data.
   class Group
-    attr_accessor :name, :description, :block
+    # The name of the group, typically a +Symbol+
+    attr_accessor :name
 
+    # The description of the group, typcially a +String+
+    attr_accessor :description
+
+    # The block which evaluates to a +String+ or meaningful +Object.to_s+
+    attr_accessor :block
+
+    # Initialize +Group+ from a hash
     def initialize(options={})
       self.name = options[:name]
       self.description = options[:description]
       self.block = options[:block]
     end
 
+    # Get a +Hash+ with the +Date+ as key and amount of items as the value. Grouped by day.
+    #     group.range(5.days.ago.to_date..Date.today)
+    #     group.daily(5.days.ago.to_date..Date.today)
+    # @param [Range] range of days
+    # @return [Hash]
     def range(range)
       range = range..range if range.is_a? Date
       data = {}
@@ -18,6 +32,10 @@ module Prisma
     end
     alias_method :daily, :range
 
+    # Get a +Hash+ with the +Date+ as key and amount of items as the value. Grouped by week, key represents a +Date+ object of the first day of the week.
+    #     group.weekly(1.week.ago.to_date..Date.today)
+    # @param [Range] range of days
+    # @return [Hash]
     def weekly(range)
       data = range(range)
 
@@ -25,6 +43,10 @@ module Prisma
       sum_up_grouped_data(data)
     end
 
+    # Get a +Hash+ with the +Date+ as key and amount of items as the value. Grouped by month, key represents a +Date+ object of the first day of the month.
+    #     group.monthly(1.month.ago.to_date..Date.today)
+    # @param [Range] range of days
+    # @return [Hash]
     def monthly(range)
       data = range(range)
 
