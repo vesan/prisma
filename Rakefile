@@ -20,6 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = 'christof@chdorner.me'
   gem.authors = ['Christof Dorner']
   gem.files  = Dir.glob('lib/**/*.rb')
+  gem.files += Dir.glob('lib/**/*.erb')
   gem.files += Dir.glob('bin/**/*')
   gem.executables = ['prisma-web']
 end
