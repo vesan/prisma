@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Christof Dorner"]
   s.date = "2012-07-05"
   s.email = "christof@chdorner.me"
+  s.executables = ["prisma-web"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -35,6 +36,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
       s.add_runtime_dependency(%q<redis-namespace>, [">= 1.0.2"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.0.0"])
+      s.add_runtime_dependency(%q<vegas>, ["~> 0.1.2"])
       s.add_development_dependency(%q<rspec-rails>, ["~> 2.10.0"])
       s.add_development_dependency(%q<yard>, ["~> 0.7"])
       s.add_development_dependency(%q<kramdown>, [">= 0"])
@@ -52,6 +54,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<redis-namespace>, [">= 1.0.2"])
       s.add_dependency(%q<sinatra>, [">= 1.0.0"])
+      s.add_dependency(%q<vegas>, ["~> 0.1.2"])
       s.add_dependency(%q<rspec-rails>, ["~> 2.10.0"])
       s.add_dependency(%q<yard>, ["~> 0.7"])
       s.add_dependency(%q<kramdown>, [">= 0"])
@@ -70,6 +73,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<redis-namespace>, [">= 1.0.2"])
     s.add_dependency(%q<sinatra>, [">= 1.0.0"])
+    s.add_dependency(%q<vegas>, ["~> 0.1.2"])
     s.add_dependency(%q<rspec-rails>, ["~> 2.10.0"])
     s.add_dependency(%q<yard>, ["~> 0.7"])
     s.add_dependency(%q<kramdown>, [">= 0"])

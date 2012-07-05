@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '>= 3.0.0'
 gem 'redis-namespace', '>= 1.0.2'
 gem 'sinatra', '>= 1.0.0'
+gem 'vegas', '~> 0.1.2'
 
 group :development do
   gem 'rspec-rails', '~> 2.10.0'

@@ -27,7 +27,20 @@ module Prisma
   end
 
   def self.redis
-    @@namespaced_redis ||= Redis::Namespace.new(redis_namespace, :redis => @@redis)
+    @@namespaced_redis ||= lambda do
+      case @@redis
+      when String
+        if @@redis =~ /redis\:\/\//
+          redis = Redis.connect(:url => @@redis, :thread_safe => true)
+        else
+          host, port, db = @@redis.split(':')
+          redis = Redis.new(:host => host, :port => port, :thread_safe => true, :db => db)
+        end
+        Redis::Namespace.new(redis_namespace, :redis => redis)
+      else
+        Redis::Namespace.new(redis_namespace, :redis => @@redis)
+      end
+    end.call
   end
 
   def self.redis_key(group_name, date=nil)

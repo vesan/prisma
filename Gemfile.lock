@@ -139,6 +139,8 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.33)
+    vegas (0.1.11)
+      rack (>= 1.0.0)
     yard (0.8.2.1)
 
 PLATFORMS
@@ -160,4 +162,5 @@ DEPENDENCIES
   simplecov
   sinatra (>= 1.0.0)
   timecop
+  vegas (~> 0.1.2)
   yard (~> 0.7)

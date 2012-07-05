@@ -20,6 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = 'christof@chdorner.me'
   gem.authors = ['Christof Dorner']
   gem.files = Dir.glob('lib/**/*.rb')
+  gem.executables = ['prisma-web']
 end
 Jeweler::RubygemsDotOrgTasks.new
 
