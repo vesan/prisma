@@ -19,7 +19,8 @@ Jeweler::Tasks.new do |gem|
   gem.summary = %Q{Simple request stats collector for Rails applications}
   gem.email = 'christof@chdorner.me'
   gem.authors = ['Christof Dorner']
-  gem.files = Dir.glob('lib/**/*.rb')
+  gem.files  = Dir.glob('lib/**/*.rb')
+  gem.files += Dir.glob('bin/**/*')
   gem.executables = ['prisma-web']
 end
 Jeweler::RubygemsDotOrgTasks.new
