@@ -35,13 +35,13 @@ describe TestController, :type => :controller do
   end
 
   context 'redis keys' do
-    before(:all) { Timecop.freeze(Time.now.utc.beginning_of_day) }
-    after(:all) { Timecop.return }
     before do
       Prisma.setup do |config|
         config.group(:by_user_id) { 1 }
       end
+      Timecop.freeze(Time.now.utc.beginning_of_day)
     end
+    after { Timecop.return }
 
     it 'creates a redis hash' do
       expect do
