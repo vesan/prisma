@@ -3,7 +3,7 @@ module Prisma
     extend ActiveSupport::Concern
 
     included do
-      before_filter :prisma_disperse_request
+      after_filter :prisma_disperse_request
     end
 
     protected
