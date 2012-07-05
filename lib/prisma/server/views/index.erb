@@ -74,7 +74,7 @@
             ['<%= date.strftime(@date_format) %>', <%= value %>],
           <% end %>
         ]);
-        var chart_<%= group.name %> = new google.visualization.LineChart(document.getElementById('<%= group.name %>_chart'));
+        var chart_<%= group.name %> = new google.visualization.ColumnChart(document.getElementById('<%= group.name %>_chart'));
         chart_<%= group.name %>.draw(data_<%= group.name %>, options);
         <% end %>
       }
