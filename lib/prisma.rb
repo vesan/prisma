@@ -52,10 +52,10 @@ module Prisma
   #     end
   #
   # @param [Symbol/String] name for identifying the group, it is used as part of the redis key.
-  # @param [String] description for describing the gorup, it is used in the admin interface.
+  # @param [Hash] options where +:type+ is either +:counter+ (default) or +:bitmap+, and where +:description+ is an optional description (used in the admin UI)
   # @param [Block] block returning a String (or a meaningful +.to_s output+) which is used for identifying a counter inside a group, Prisma doesn't count a request if block returns +nil+ or +false+
-  def self.group(name, description=nil, &block)
-    @@groups[name] = Group.new(name: name, description: description, block: block)
+  def self.group(name, options={}, &block)
+    @@groups[name] = Group.new(options.merge(name: name, block: block))
   end
 
   # Returns a default or configured +Redis+ instance wrapped in a +Redis::Namespace+

@@ -40,8 +40,8 @@ describe Prisma do
 
     it 'stores configuration in redis' do
       Prisma.setup do |config|
-        config.group('group1', 'description 1') { 1 }
-        config.group('group2', 'description 2') { 1 }
+        config.group('group1', description: 'description 1') { 1 }
+        config.group('group2', type: :bitmap, description: 'description 2') { 1 }
         config.group('group3') { 1 }
       end
 
