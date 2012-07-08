@@ -12,11 +12,26 @@ describe Prisma::Group do
   describe '#initialize' do
     context 'sets attributes from hash' do
       let(:name_stub) { stub }
+      let(:type) { :bitmap }
+      let(:description_stub) { stub }
       let(:block_stub) { stub }
 
-      subject { Prisma::Group.new(name: name_stub, block: block_stub) }
+      subject { Prisma::Group.new(name: name_stub,
+                                  type: type,
+                                  description: description_stub,
+                                  block: block_stub) }
       its(:name) { should == name_stub }
+      its(:type) { should == type }
+      its(:description) { should == description_stub }
       its(:block) { should == block_stub }
+
+      it 'uses :counter as default type' do
+        Prisma::Group.new.type.should == :counter
+      end
+
+      it 'throws ArgumentError when type is undefined' do
+        expect { Prisma::Group.new(type: :undefined_type) }.to raise_error(ArgumentError)
+      end
     end
   end
 
