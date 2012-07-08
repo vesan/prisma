@@ -17,7 +17,7 @@ require 'prisma'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-  config.filter_run :focus => true
+  config.filter_run focus: true
   config.run_all_when_everything_filtered = true
   config.treat_symbols_as_metadata_keys_with_true_values = true  
 
@@ -33,11 +33,11 @@ RSpec.configure do |config|
     end
 
     DEFAULT_VALUES = default_values
-    REDIS = Redis.new(:db => 1)
+    REDIS = Redis.new(db: 1)
   end
   config.before(:each) do
     # always use redis db 1 for tests
-    Redis.stub(:new => REDIS)
+    Redis.stub(new: REDIS)
     REDIS.flushdb
 
     DEFAULT_VALUES.each do |variable, value|

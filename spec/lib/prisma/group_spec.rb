@@ -14,7 +14,7 @@ describe Prisma::Group do
       let(:name_stub) { stub }
       let(:block_stub) { stub }
 
-      subject { Prisma::Group.new(:name => name_stub, :block => block_stub) }
+      subject { Prisma::Group.new(name: name_stub, block: block_stub) }
       its(:name) { should == name_stub }
       its(:block) { should == block_stub }
     end
@@ -22,7 +22,7 @@ describe Prisma::Group do
 
   describe '#range' do
     let(:range) { Date.new(2012, 06, 01)..Date.new(2012, 06, 03) }
-    let(:group) { Prisma::Group.new(:name => group_name) }
+    let(:group) { Prisma::Group.new(name: group_name) }
 
     it 'returns a hash' do
       group.range(range).should be_kind_of Hash
@@ -61,7 +61,7 @@ describe Prisma::Group do
 
   describe '#weekly' do
     let(:range) { Date.new(2012, 06, 18)..Date.new(2012, 07, 01) }
-    let(:group) { Prisma::Group.new(:name => group_name) }
+    let(:group) { Prisma::Group.new(name: group_name) }
 
     before do
       Timecop.freeze(Time.now)
@@ -83,7 +83,7 @@ describe Prisma::Group do
 
   describe '#monthly' do
     let(:range) { Date.new(2012, 05, 01)..Date.new(2012, 06, 01) }
-    let(:group) { Prisma::Group.new(:name => group_name) }
+    let(:group) { Prisma::Group.new(name: group_name) }
 
     before do
       Timecop.freeze(Time.now)

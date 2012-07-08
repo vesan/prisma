@@ -11,19 +11,19 @@ class TestController < ActionController::Base
   include Prisma::Filter
 
   def index
-    render :nothing => true
+    render nothing: true
   end
 end
 
-describe TestController, :type => :controller do
+describe TestController, type: :controller do
   it 'calls prisma_disperse_request when requesting an action' do
     controller.should_receive(:prisma_disperse_request)
     get :index
   end
 
   it 'calls the block of each group' do
-    group1_spy = stub(:assert! => nil)
-    group2_spy = stub(:assert! => nil)
+    group1_spy = stub(assert!: nil)
+    group2_spy = stub(assert!: nil)
     Prisma.setup do |config|
       config.group(:group1) { group1_spy.assert! }
       config.group(:group2) { group2_spy.assert! }

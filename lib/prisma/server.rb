@@ -46,7 +46,7 @@ module Prisma
 
     def groups
       Prisma.redis.hgetall('configuration').map do |name, description|
-        Prisma::Group.new(:name => name, :description => description)
+        Prisma::Group.new(name: name, description: description)
       end
     end
   end

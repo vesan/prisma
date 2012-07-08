@@ -20,7 +20,7 @@ describe Prisma do
     end
 
     context 'allows to overwrite attribute' do
-      let(:redis_stub) { stub(:del => true, :rpush => true) }
+      let(:redis_stub) { stub(del: true, rpush: true) }
       let(:redis_namespace_stub) { stub }
       let(:redis_expiration_duration_stub) { stub }
 
@@ -83,30 +83,30 @@ describe Prisma do
     end
 
     it 'creates correct Redis object when hostname:port' do
-      Redis.should_receive(:new).with(:host => 'hostname',
-                                      :port => 'port',
-                                      :thread_safe => true,
-                                      :db => nil)
+      Redis.should_receive(:new).with(host: 'hostname',
+                                      port: 'port',
+                                      thread_safe: true,
+                                      db: nil)
       Prisma.setup do |config|
         config.redis = 'hostname:port'
       end
     end
 
     it 'creates correct Redis object when hostname:port:db' do
-      Redis.should_receive(:new).with(:host => 'hostname',
-                                      :port => 'port',
-                                      :thread_safe => true,
-                                      :db => 'db')
+      Redis.should_receive(:new).with(host: 'hostname',
+                                      port: 'port',
+                                      thread_safe: true,
+                                      db: 'db')
       Prisma.setup do |config|
         config.redis = 'hostname:port:db'
       end
     end
 
     it 'creates correct Redis object when redis://hostname:port/db' do
-      Redis.should_receive(:new).with(:host => 'hostname',
-                                      :port => 'port',
-                                      :thread_safe => true,
-                                      :db => 'db')
+      Redis.should_receive(:new).with(host: 'hostname',
+                                      port: 'port',
+                                      thread_safe: true,
+                                      db: 'db')
       Prisma.setup do |config|
         config.redis = 'hostname:port:db'
       end

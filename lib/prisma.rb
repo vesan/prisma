@@ -36,7 +36,7 @@ module Prisma
   # Configure prisma. Example usage:
   #     Prisma.setup do |config|
   #       config.group :active_api_clients { |controller| controller.current_client.id }
-  #       config.redis = Redis.new(:db => 1)
+  #       config.redis = Redis.new(db: 1)
   #       config.redis_namespace = 'stats'
   #       config.redis_expiration_duration = 2.days
   #     end
@@ -55,7 +55,7 @@ module Prisma
   # @param [String] description for describing the gorup, it is used in the admin interface.
   # @param [Block] block returning a String (or a meaningful +.to_s output+) which is used for identifying a counter inside a group, Prisma doesn't count a request if block returns +nil+ or +false+
   def self.group(name, description=nil, &block)
-    @@groups[name] = Group.new(:name => name, :description => description, :block => block)
+    @@groups[name] = Group.new(name: name, description: description, block: block)
   end
 
   # Returns a default or configured +Redis+ instance wrapped in a +Redis::Namespace+
@@ -65,14 +65,14 @@ module Prisma
       case @@redis
       when String
         if @@redis =~ /redis\:\/\//
-          redis = Redis.connect(:url => @@redis, :thread_safe => true)
+          redis = Redis.connect(url: @@redis, thread_safe: true)
         else
           host, port, db = @@redis.split(':')
-          redis = Redis.new(:host => host, :port => port, :thread_safe => true, :db => db)
+          redis = Redis.new(host: host, port: port, thread_safe: true, db: db)
         end
-        Redis::Namespace.new(redis_namespace, :redis => redis)
+        Redis::Namespace.new(redis_namespace, redis: redis)
       else
-        Redis::Namespace.new(redis_namespace, :redis => @@redis)
+        Redis::Namespace.new(redis_namespace, redis: @@redis)
       end
     end.call
   end
