@@ -156,6 +156,7 @@ DEPENDENCIES
   kramdown
   rails (>= 3.0.0)
   rb-fsevent
+  redis (>= 2.2.0)
   redis-namespace (>= 1.0.2)
   rspec-rails (~> 2.10.0)
   shotgun

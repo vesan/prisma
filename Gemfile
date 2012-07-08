@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '>= 3.0.0'
 gem 'redis-namespace', '>= 1.0.2'
+gem 'redis', '>= 2.2.0'
 gem 'sinatra', '>= 1.0.0'
 gem 'vegas', '~> 0.1.2'
 
