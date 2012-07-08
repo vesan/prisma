@@ -101,7 +101,9 @@ module Prisma
   def self.store_configuration
     redis.del 'configuration'
     groups.values.each do |group|
-      redis.hset 'configuration', group.name, group.description
+      redis.rpush 'configuration', group.name
+      redis.set "configuration:description:#{group.name}", group.description if group.description
+      redis.set "configuration:type:#{group.name}", group.type
     end
   end
 end

@@ -38,18 +38,32 @@ describe Prisma do
       it('redis_expiration_duration') { subject.class_variable_get(:@@redis_expiration_duration).should == redis_expiration_duration_stub }
     end
 
-    it 'stores configuration in redis' do
-      Prisma.setup do |config|
-        config.group('group1', description: 'description 1') { 1 }
-        config.group('group2', type: :bitmap, description: 'description 2') { 1 }
-        config.group('group3') { 1 }
+    context 'configuration storage' do
+      before do
+        Prisma.setup do |config|
+          config.group('group1', description: 'description 1') { 1 }
+          config.group('group2', type: :bitmap, description: 'description 2') { 1 }
+          config.group('group3') { 1 }
+        end
       end
 
-      Prisma.redis.hgetall('configuration').should == {
-        'group1' => 'description 1',
-        'group2' => 'description 2',
-        'group3' => ''
-      }
+      it 'stores group names in configuration list' do
+        Prisma.redis.lrange('configuration', 0, -1).should == ['group1',
+                                                               'group2',
+                                                               'group3']
+      end
+
+      it 'stores group descriptions as their own keys' do
+        Prisma.redis.get('configuration:description:group1').should == 'description 1'
+        Prisma.redis.get('configuration:description:group2').should == 'description 2'
+        Prisma.redis.exists('configuration:description:group3').should be_false
+      end
+
+      it 'stores group type as their own keys' do
+        Prisma.redis.get('configuration:type:group1').should == 'counter'
+        Prisma.redis.get('configuration:type:group2').should == 'bitmap'
+        Prisma.redis.get('configuration:type:group3').should == 'counter'
+      end
     end
   end
 
