@@ -49,7 +49,7 @@ task :seed do
 
   Prisma.setup do |config|
     GROUP_NAMES.each do |group_name|
-      config.group(group_name, "Description of #{group_name}") { 1 }
+      config.group(group_name, :type => :counter, :description => "Description of #{group_name}") { 1 }
     end
   end
 
@@ -58,7 +58,7 @@ task :seed do
     365.times do |n|
       count = rand(1000)
       count.times do |user_id|
-        Prisma.redis.hincrby "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}", user_id, 1
+        Prisma.redis.incr "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}"
       end
     end
   end

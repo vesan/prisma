@@ -45,8 +45,10 @@ module Prisma
     private
 
     def groups
-      Prisma.redis.hgetall('configuration').map do |name, description|
-        Prisma::Group.new(name: name, description: description)
+      Prisma.redis.lrange('configuration', 0, -1).map do |name|
+        type = Prisma.redis.get("configuration:type:#{name}").to_sym
+        description = Prisma.redis.get("configuration:description:#{name}")
+        Prisma::Group.new(name: name, type: type, description: description)
       end
     end
   end

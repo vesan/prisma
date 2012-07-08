@@ -37,22 +37,22 @@ describe TestController, type: :controller do
   context 'redis keys' do
     before do
       Prisma.setup do |config|
-        config.group(:by_user_id) { 1 }
+        config.group(:by_user_id, type: :counter) { 1 }
       end
       Timecop.freeze(Time.now.utc.beginning_of_day)
     end
     after { Timecop.return }
 
-    it 'creates a redis hash' do
+    it 'creates a redis string' do
       expect do
         get :index
-      end.to change { Prisma.redis.type Prisma.redis_key(:by_user_id) }.from('none').to('hash')
+      end.to change { Prisma.redis.type Prisma.redis_key(:by_user_id) }.from('none').to('string')
     end
 
-    it 'adds a key named 1' do
+    it 'increments it to 1' do
       expect do
         get :index
-      end.to change { Prisma.redis.hkeys Prisma.redis_key(:by_user_id) }.from([]).to(['1'])
+      end.to change { Prisma.redis.get Prisma.redis_key(:by_user_id) }.from(nil).to('1')
     end
 
     context 'expiring keys' do
@@ -104,7 +104,7 @@ describe TestController, type: :controller do
 
     it 'sets the counter to 1 on first request' do
       get :index
-      Prisma.redis.hget(Prisma.redis_key(:by_user_id), '1').should == '1'
+      Prisma.redis.get(Prisma.redis_key(:by_user_id)).should == '1'
     end
 
     it 'skips incrementing when given block returns false' do
@@ -130,7 +130,7 @@ describe TestController, type: :controller do
     it 'sets the counter to 4 on fourth call' do
       3.times { get :index }
       get :index
-      Prisma.redis.hget(Prisma.redis_key(:by_user_id), '1').should == '4'
+      Prisma.redis.get(Prisma.redis_key(:by_user_id)).should == '4'
     end
   end
 end

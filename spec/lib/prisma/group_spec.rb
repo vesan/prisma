@@ -4,9 +4,7 @@ describe Prisma::Group do
   let(:group_name) { :test_group }
 
   def set_hits(date, count)
-    count.times do |n|
-      Prisma.redis.hset Prisma.redis_key(group_name, date), n, 1
-    end
+    Prisma.redis.set Prisma.redis_key(group_name, date), count
   end
 
   describe '#initialize' do

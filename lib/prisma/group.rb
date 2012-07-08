@@ -16,7 +16,7 @@ module Prisma
     # Initialize +Group+ from a hash
     def initialize(options={})
       options.reverse_merge!(type: :counter)
-      raise ArgumentError.new("Type #{options[:type]} not allowed") unless [:counter, :bitmap].include? options[:type]
+      raise ArgumentError.new("Type #{options[:type].inspect} not allowed") unless [:counter, :bitmap].include? options[:type]
 
       self.name = options[:name]
       self.type = options[:type]
@@ -33,7 +33,9 @@ module Prisma
       range = range..range if range.is_a? Date
       data = {}
       range.each do |date|
-        data[date] = Prisma.redis.hlen Prisma.redis_key(name, date)
+        if type == :counter
+          data[date] = Prisma.redis.get(Prisma.redis_key(name, date)).to_i
+        end
       end
       data
     end
