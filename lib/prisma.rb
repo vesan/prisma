@@ -1,5 +1,6 @@
 require 'rails/all'
 require 'redis-namespace'
+require 'bitset'
 
 require 'prisma/group'
 require 'prisma/railtie'

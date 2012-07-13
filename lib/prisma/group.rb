@@ -35,8 +35,14 @@ module Prisma
       range = range..range if range.is_a? Date
       data = {}
       range.each do |date|
-        if type == :counter
+        case type
+        when :counter
           data[date] = Prisma.redis.get(Prisma.redis_key(name, date)).to_i
+        when :bitmap
+          bitstring = Prisma.redis.get(Prisma.redis_key(name, date)) || ''
+          string = bitstring.unpack('b*').first
+          bitmap = Bitset.from_s(string)
+          data[date] = bitmap.cardinality
         end
       end
       data
