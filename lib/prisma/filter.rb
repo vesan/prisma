@@ -13,8 +13,9 @@ module Prisma
       Prisma.groups.each do |name, group|
         redis_key = Prisma.redis_key(name)
         value = group.block.call(self)
-        Prisma.redis.incr redis_key if value
+        next unless value
 
+        Prisma.redis.incr redis_key if group.type == :counter
         Prisma.redis.expire redis_key, Prisma.redis_expire if Prisma.redis_expiration_duration
       end
     end
