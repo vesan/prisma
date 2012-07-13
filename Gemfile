@@ -5,6 +5,7 @@ gem 'redis-namespace', '>= 1.0.2'
 gem 'redis', '>= 2.2.0'
 gem 'sinatra', '>= 1.0.0'
 gem 'vegas', '~> 0.1.2'
+gem 'bitset', '>= 0.1.0'
 
 group :development do
   gem 'rspec-rails', '~> 2.10.0'
