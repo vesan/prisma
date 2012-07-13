@@ -129,6 +129,7 @@ describe TestController, type: :controller do
     end
 
     it 'sets the byte at the index of the returned int to 1' do
+      Redis::Namespace::COMMANDS.stub(:include? => false)
       Prisma.redis.should_receive(:setbit).with('prisma:key', 15, 1)
       get :index
     end
