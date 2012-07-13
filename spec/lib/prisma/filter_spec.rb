@@ -43,38 +43,10 @@ describe TestController, type: :controller do
     end
     after { Timecop.return }
 
-    it 'creates a redis string' do
+    it 'creates a redis key' do
       expect do
         get :index
-      end.to change { Prisma.redis.type Prisma.redis_key(:by_user_id) }.from('none').to('string')
-    end
-
-    it 'increments it to 1' do
-      expect do
-        get :index
-      end.to change { Prisma.redis.get Prisma.redis_key(:by_user_id) }.from(nil).to('1')
-    end
-
-    context 'expiring keys' do
-      before do
-        Prisma.setup do |config|
-          config.redis_expiration_duration = 1.day
-        end
-      end
-
-      it 'sets key expire to 1 day' do
-        expect do
-          get :index
-        end.to change { Prisma.redis.ttl Prisma.redis_key(:by_user_id) }.from(-1).to(1.day)
-      end
-    end
-  end
-
-  context 'redis counters' do
-    before do
-      Prisma.setup do |config|
-        config.group(:by_user_id) { 1 }
-      end
+      end.to change { Prisma.redis.exists Prisma.redis_key(:by_user_id) }.from(false).to(true)
     end
 
     it 'uses one key for each day and group' do
@@ -91,6 +63,20 @@ describe TestController, type: :controller do
         expect do
           get :index
         end.to change { Prisma.redis.keys.count }.by(2)
+      end
+    end
+
+    context 'expiring keys' do
+      before do
+        Prisma.setup do |config|
+          config.redis_expiration_duration = 1.day
+        end
+      end
+
+      it 'sets key expire to 1 day' do
+        expect do
+          get :index
+        end.to change { Prisma.redis.ttl Prisma.redis_key(:by_user_id) }.from(-1).to(1.day)
       end
     end
   end
@@ -131,6 +117,44 @@ describe TestController, type: :controller do
       3.times { get :index }
       get :index
       Prisma.redis.get(Prisma.redis_key(:by_user_id)).should == '4'
+    end
+  end
+
+  context 'redis bitmaps' do
+    before do
+      Prisma.setup do |config|
+        config.group(:by_user_id, :type => :bitmap) { 15 }
+      end
+      Prisma.stub(:redis_key => 'key')
+    end
+
+    it 'sets the byte at the index of the returned int to 1' do
+      Prisma.redis.should_receive(:setbit).with('prisma:key', 15, 1)
+      get :index
+    end
+
+    it 'skips adding namespace if redis_namespace supports setbit' do
+      Redis::Namespace::COMMANDS.stub(:include? => true)
+      Prisma.redis.should_receive(:setbit).with('key', 15, 1)
+      get :index
+    end
+
+    it 'skips setting bits when given block returns 0' do
+      Prisma.setup do |config|
+        config.group(:by_user_id, :type => :bitmap) { 0 }
+      end
+      expect do
+        get :index
+      end.to_not change { Prisma.redis.keys.count }
+    end
+
+    it 'skips setting bits when given block returns nil' do
+      Prisma.setup do |config|
+        config.group(:by_user_id, :type => :bitmap) { nil }
+      end
+      expect do
+        get :index
+      end.to_not change { Prisma.redis.keys.count }
     end
   end
 end

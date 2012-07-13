@@ -10,7 +10,9 @@ module Prisma
     # The description of the group, typcially a +String+
     attr_accessor :description
 
-    # The block which evaluates to a +String+ or meaningful +Object.to_s+
+    # Block which gets called to evaluate if request should be counted and depending on the type how the request should be counted.
+    # When +type+ is +:counter+ the request is getting counted as long as the return value is not nil or false.
+    # When +type+ is +:bitmap+ the request is getting counted as long as the return value is an integer.
     attr_accessor :block
 
     # Initialize +Group+ from a hash
