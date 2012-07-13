@@ -45,20 +45,27 @@ task :seed do
   require 'prisma'
   Prisma.redis.keys.each { |key| Prisma.redis.del key }
 
-  GROUP_NAMES = [:group_1, :group_2, :group_3, :group_4, :group_5]
+  GROUP_NAMES = [:counter_1, :counter_2, :bitmap_3, :bitmap_4]
 
   Prisma.setup do |config|
-    GROUP_NAMES.each do |group_name|
-      config.group(group_name, :type => :counter, :description => "Description of #{group_name}") { 1 }
+    GROUP_NAMES.each_with_index do |group_name, index|
+      type = index < 2 ? :counter : :bitmap
+      config.group(group_name, :type => type, :description => "Description of #{group_name}") { 1 }
     end
   end
 
-  GROUP_NAMES.each do |group_name|
+  GROUP_NAMES.each_with_index do |group_name, group_index|
     puts "Seeding #{group_name}..."
     365.times do |n|
+      key = "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}"
+
       count = rand(1000)
       count.times do |user_id|
-        Prisma.redis.incr "#{group_name}:#{(Date.today - n).strftime('%Y:%m:%d')}"
+        if group_index < 2
+          Prisma.redis.incr key
+        else
+          Prisma.redis.setbit "#{Prisma.redis_namespace}:#{key}", user_id, 1
+        end
       end
     end
   end
