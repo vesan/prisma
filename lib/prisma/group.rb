@@ -41,8 +41,7 @@ module Prisma
         when :bitmap
           bitstring = Prisma.redis.get(Prisma.redis_key(name, date)) || ''
           string = bitstring.unpack('b*').first
-          bitmap = Bitset.from_s(string)
-          data[date] = bitmap.cardinality
+          data[date] = string.count('1')
         end
       end
       data
