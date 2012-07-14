@@ -25,6 +25,9 @@ module Prisma
         end
         Prisma.redis.expire redis_key, Prisma.redis_expire if Prisma.redis_expiration_duration
       end
+    rescue => e
+      Prisma.logger.error "Prisma experienced an exception: #{e.to_s}"
+      Prisma.logger.error e.backtrace.join("\n")
     end
   end
 end

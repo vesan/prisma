@@ -34,6 +34,16 @@ describe TestController, type: :controller do
     get :index
   end
 
+  it 'rescues and logs exceptions' do
+    Prisma.setup do |config|
+      config.group(:group) { raise ArgumentError.new('fail') }
+    end
+
+    expect do
+      get :index
+    end.to_not raise_error
+  end
+
   context 'redis keys' do
     before do
       Prisma.setup do |config|
