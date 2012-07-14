@@ -4,6 +4,7 @@ require 'redis-namespace'
 require 'prisma/group'
 require 'prisma/railtie'
 require 'prisma/filter'
+require 'prisma/null_logger'
 
 # Used for configuration, typically in a Rails initializer.
 module Prisma
@@ -30,6 +31,12 @@ module Prisma
   @@redis_namespace = 'prisma' 
 
   # @!visibility public
+  # Logger instance responding to +debug+, +warn+ and +error+.
+  mattr_accessor :logger
+  # @!visibility private
+  @@logger = NullLogger.new
+
+  # @!visibility public
   # Duration in seconds for expiring redis keys (easy to use with Rails duration helpers +1.day+)
   mattr_accessor :redis_expiration_duration
 
@@ -39,6 +46,7 @@ module Prisma
   #       config.redis = Redis.new(db: 1)
   #       config.redis_namespace = 'stats'
   #       config.redis_expiration_duration = 2.days
+  #       config.logger = Rails.logger
   #     end
   def self.setup
     yield self

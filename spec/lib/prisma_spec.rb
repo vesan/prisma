@@ -9,6 +9,7 @@ describe Prisma do
       its(:redis) { should be_kind_of Redis::Namespace }
       its(:redis_namespace) { should == 'prisma' }
       its(:redis_expiration_duration) { should be_nil }
+      its(:logger) { should be_kind_of Prisma::NullLogger }
     end
   end
 
