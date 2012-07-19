@@ -3,8 +3,14 @@ require 'spec_helper'
 describe Prisma::Group do
   let(:group_name) { :test_group }
 
-  def set_hits(date, count)
+  def set_count_hits(date, count)
     Prisma.redis.set Prisma.redis_key(group_name, date), count
+  end
+  
+  def set_bitmap_hit(date, user_id)
+    redis_key = Prisma.redis_key(group_name, date)
+    setbit_key = Redis::Namespace::COMMANDS.include?('setbit') ? redis_key : "#{Prisma.redis_namespace}:#{redis_key}"
+    Prisma.redis.setbit setbit_key, user_id, 1
   end
 
   describe '#initialize' do
@@ -56,64 +62,137 @@ describe Prisma::Group do
     end
 
     context 'when data is available' do
-      before do
-        set_hits(Date.new(2012, 06, 1), 3)
-        set_hits(Date.new(2012, 06, 2), 1)
-        set_hits(Date.new(2012, 06, 3), 2)
+      context 'when type counter' do
+        before do
+          set_count_hits(Date.new(2012, 06, 1), 3)
+          set_count_hits(Date.new(2012, 06, 2), 1)
+          set_count_hits(Date.new(2012, 06, 3), 2)
+        end
+
+        it 'returns the counts' do
+          group.range(range).should == {
+            Date.new(2012, 06, 01) => 3,
+            Date.new(2012, 06, 02) => 1,
+            Date.new(2012, 06, 03) => 2
+          }
+        end
       end
 
-      it 'returns the counts' do
-        group.range(range).should == {
-          Date.new(2012, 06, 01) => 3,
-          Date.new(2012, 06, 02) => 1,
-          Date.new(2012, 06, 03) => 2
-        }
+      context 'when type bitmap' do
+        let(:group) { Prisma::Group.new(name: group_name, type: :bitmap) }
+
+        before do
+          set_bitmap_hit(Date.new(2012, 06, 1), 1)
+          set_bitmap_hit(Date.new(2012, 06, 2), 1)
+          set_bitmap_hit(Date.new(2012, 06, 3), 1)
+          set_bitmap_hit(Date.new(2012, 06, 3), 2)
+        end
+
+        it 'returns the correct counts' do
+          group.range(range).should == {
+            Date.new(2012, 06, 01) => 1,
+            Date.new(2012, 06, 02) => 1,
+            Date.new(2012, 06, 03) => 2
+          }
+        end
       end
     end
   end
 
   describe '#weekly' do
     let(:range) { Date.new(2012, 06, 18)..Date.new(2012, 07, 01) }
-    let(:group) { Prisma::Group.new(name: group_name) }
 
-    before do
-      Timecop.freeze(Time.now)
-      set_hits(Date.new(2012, 06, 17), 1)
-      set_hits(Date.new(2012, 06, 18), 2)
-      set_hits(Date.new(2012, 06, 25), 1)
-      set_hits(Date.new(2012, 06, 26), 1)
-      set_hits(Date.new(2012, 07, 01), 1)
+    context 'when type counter' do
+      let(:group) { Prisma::Group.new(name: group_name) }
+
+      before do
+        Timecop.freeze(Time.now)
+        set_count_hits(Date.new(2012, 06, 17), 1)
+        set_count_hits(Date.new(2012, 06, 18), 2)
+        set_count_hits(Date.new(2012, 06, 25), 1)
+        set_count_hits(Date.new(2012, 06, 26), 1)
+        set_count_hits(Date.new(2012, 07, 01), 1)
+      end
+      after { Timecop.return }
+
+      it 'groups counts by week' do
+        group.weekly(range).should == {
+          Date.new(2012, 06, 18) => 2,
+          Date.new(2012, 06, 25) => 3
+        }
+      end
     end
-    after { Timecop.return }
 
-    it 'groups counts by week' do
-      group.weekly(range).should == {
-        Date.new(2012, 06, 18) => 2,
-        Date.new(2012, 06, 25) => 3
-      }
+    context 'when type bitmap' do
+      let(:group) { Prisma::Group.new(name: group_name, type: :bitmap) }
+
+      before do
+        Timecop.freeze(Time.now)
+        set_bitmap_hit(Date.new(2012, 06, 17), 1)
+        set_bitmap_hit(Date.new(2012, 06, 18), 1)
+        set_bitmap_hit(Date.new(2012, 06, 19), 1)
+        set_bitmap_hit(Date.new(2012, 06, 25), 1)
+        set_bitmap_hit(Date.new(2012, 06, 26), 1)
+        set_bitmap_hit(Date.new(2012, 07, 01), 1)
+        set_bitmap_hit(Date.new(2012, 07, 01), 2)
+      end
+      after { Timecop.return }
+
+      it 'groups counts by week' do
+        group.weekly(range).should == {
+          Date.new(2012, 06, 18) => 1,
+          Date.new(2012, 06, 25) => 2
+        }
+      end
     end
   end
 
   describe '#monthly' do
-    let(:range) { Date.new(2012, 05, 01)..Date.new(2012, 06, 01) }
-    let(:group) { Prisma::Group.new(name: group_name) }
+    let(:range) { Date.new(2012, 05, 01)..Date.new(2012, 06, 02) }
 
-    before do
-      Timecop.freeze(Time.now)
-      set_hits(Date.new(2012, 04, 17), 1)
-      set_hits(Date.new(2012, 05, 18), 2)
-      set_hits(Date.new(2012, 05, 25), 1)
-      set_hits(Date.new(2012, 05, 26), 1)
-      set_hits(Date.new(2012, 06, 01), 1)
-      set_hits(Date.new(2012, 07, 01), 1)
+    context 'when type counter' do
+      let(:group) { Prisma::Group.new(name: group_name) }
+
+      before do
+        Timecop.freeze(Time.now)
+        set_count_hits(Date.new(2012, 04, 17), 1)
+        set_count_hits(Date.new(2012, 05, 18), 2)
+        set_count_hits(Date.new(2012, 05, 25), 1)
+        set_count_hits(Date.new(2012, 05, 26), 1)
+        set_count_hits(Date.new(2012, 06, 01), 1)
+        set_count_hits(Date.new(2012, 07, 01), 1)
+      end
+      after { Timecop.return }
+
+      it 'groups counts by month' do
+        group.monthly(range).should == {
+          Date.new(2012, 05, 01) => 4,
+          Date.new(2012, 06, 01) => 1
+        }
+      end
     end
-    after { Timecop.return }
 
-    it 'groups counts by month' do
-      group.monthly(range).should == {
-        Date.new(2012, 05, 01) => 4,
-        Date.new(2012, 06, 01) => 1
-      }
+    context 'when type bitmap' do
+      let(:group) { Prisma::Group.new(name: group_name, type: :bitmap) }
+
+      before do
+        Timecop.freeze(Time.now)
+        set_bitmap_hit(Date.new(2012, 04, 17), 1)
+        set_bitmap_hit(Date.new(2012, 05, 18), 1)
+        set_bitmap_hit(Date.new(2012, 05, 25), 1)
+        set_bitmap_hit(Date.new(2012, 05, 26), 2)
+        set_bitmap_hit(Date.new(2012, 06, 01), 1)
+        set_bitmap_hit(Date.new(2012, 06, 02), 1)
+        set_bitmap_hit(Date.new(2012, 07, 01), 1)
+      end
+      after { Timecop.return }
+
+      it 'groups counts by month' do
+        group.monthly(range).should == {
+          Date.new(2012, 05, 01) => 2,
+          Date.new(2012, 06, 01) => 1
+        }
+      end
     end
   end
 end

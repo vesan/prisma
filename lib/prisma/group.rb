@@ -31,7 +31,7 @@ module Prisma
     #     group.daily(5.days.ago.to_date..Date.today)
     # @param [Range] range of days
     # @return [Hash]
-    def range(range)
+    def range(range, options={})
       range = (range..range) if range.is_a? Date
       data = range.map do |date|
         case type
@@ -40,7 +40,7 @@ module Prisma
         when :bitmap
           bitstring = Prisma.redis.get(Prisma.redis_key(name, date)) || ''
           string = bitstring.unpack('b*').first
-          value = string.count('1')
+          value = options[:skip_bitmap_count] ? string : string.count('1')
         end
 
         [date, value]
@@ -55,10 +55,15 @@ module Prisma
     # @param [Range] range of days
     # @return [Hash]
     def weekly(range)
-      data = range(range)
+      data = range(range, :skip_bitmap_count => true)
 
       data = data.group_by { |date, value| date.beginning_of_week }
-      sum_up_grouped_data(data)
+      case self.type
+      when :counter
+        sum_up_grouped_data(data)
+      when :bitmap
+        bitmap_or_grouped_data(data)
+      end
     end
 
     # Get a +Hash+ with the +Date+ as key and amount of items as the value. Grouped by month, key represents a +Date+ object of the first day of the month.
@@ -66,18 +71,33 @@ module Prisma
     # @param [Range] range of days
     # @return [Hash]
     def monthly(range)
-      data = range(range)
+      data = range(range, :skip_bitmap_count => true)
 
       data = data.group_by { |date, value| date.beginning_of_month }
-      sum_up_grouped_data(data)
+      case self.type
+      when :counter
+        sum_up_grouped_data(data)
+      when :bitmap
+        bitmap_or_grouped_data(data)
+      end
     end
 
     private
 
     def sum_up_grouped_data(data)
       data = data.map do |date, values|
-        value = values.inject(0) { |sum, value| sum + value.second }
+        value = values.inject(0) { |sum, value| sum + value.second.to_i }
 
+        [date, value]
+      end
+
+      Hash[data]
+    end
+
+    def bitmap_or_grouped_data(data)
+      data = data.map do |date, values|
+        value = values.map { |value| value.second.to_i }.inject(:|)
+        value = value.to_s.count('1')
         [date, value]
       end
 
