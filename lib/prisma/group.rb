@@ -32,7 +32,7 @@ module Prisma
     # @param [Range] range of days
     # @return [Hash]
     def range(range)
-      range = (range..range) if range.is_a?(Date)
+      range = (range..range) if range.is_a? Date
       data = range.map do |date|
         case type
         when :counter
