@@ -96,8 +96,8 @@ module Prisma
 
     def bitmap_or_grouped_data(data)
       data = data.map do |date, values|
-        value = values.map { |value| value.second.to_i }.inject(:|)
-        value = value.to_s.count('1')
+        value = values.map { |value| value.second.to_i(2) }.inject(:|)
+        value = value.to_s(2).count('1')
         [date, value]
       end
 
