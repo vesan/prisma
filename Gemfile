@@ -14,7 +14,7 @@ group :development do
   gem 'jeweler', '~> 1.8.3'
   gem 'guard'
   gem 'guard-rspec'
-  gem 'guard-livereload'
+  gem 'guard-livereload', '>= 2.5.2'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'simplecov'
