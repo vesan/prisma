@@ -141,7 +141,7 @@ GEM
     tzinfo (0.3.33)
     vegas (0.1.11)
       rack (>= 1.0.0)
-    yard (0.8.2.1)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -164,4 +164,7 @@ DEPENDENCIES
   sinatra (>= 1.0.0)
   timecop
   vegas (~> 0.1.2)
-  yard (~> 0.7)
+  yard (~> 0.9, >= 0.9.20)
+
+BUNDLED WITH
+   1.17.3
