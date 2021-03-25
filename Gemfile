@@ -9,7 +9,7 @@ gem 'vegas', '~> 0.1.2'
 group :development do
   gem 'rspec-rails', '~> 2.10.0'
   gem 'yard', '~> 0.7'
-  gem 'kramdown'
+  gem 'kramdown', '>= 2.3.1'
   gem 'bundler'
   gem 'jeweler', '~> 1.8.3'
   gem 'guard'
