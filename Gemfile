@@ -11,7 +11,7 @@ group :development do
   gem 'yard', '~> 0.7'
   gem 'kramdown'
   gem 'bundler'
-  gem 'jeweler', '~> 1.8.3'
+  gem 'jeweler', '~> 1.8.4'
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
